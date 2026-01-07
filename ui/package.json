@@ -7,6 +7,9 @@
   "engines": {
     "node": "24"
   },
+  "overrides": {
+    "@txnlab/use-wallet-react": "file:./txnlab-use-wallet-react-4.3.1-2.tgz"
+  },
   "devDependencies": {
     "@playwright/test": "1.48.0",
     "@tanstack/router-vite-plugin": "1.62.0",

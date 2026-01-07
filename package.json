@@ -20,5 +20,10 @@
     "dev:localnet": "pnpm -F './ui' run dev:localnet",
     "dev:testnet": "pnpm -F './ui' run dev:testnet",
     "dev:mainnet": "pnpm -F './ui' run dev:mainnet"
+  },
+  "pnpm": {
+    "overrides": {
+      "@txnlab/use-wallet-react": "file:./txnlab-use-wallet-react-4.3.1-2.tgz"
+    }
   }
 }
