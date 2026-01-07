@@ -1,0 +1,365 @@
+❯ pnpm run build
+
+> reti-ui@1.4.3 build /Users/joe/git/algorandfoundation/reti/ui
+> tsc && vite build
+
+src/api/algod.ts:19:69 - error TS2339: Property 'exclude' does not exist on type 'Promise<Account>'.
+
+19   const accountInfo = await algodClient.accountInformation(address).exclude(exclude).do()
+                                                                       ~~~~~~~
+
+src/api/algod.ts:34:37 - error TS2551: Property 'getAssetByID' does not exist on type 'AlgodClient'. Did you mean 'assetById'?
+
+34     const asset = await algodClient.getAssetByID(assetId).do()
+                                       ~~~~~~~~~~~~
+
+  ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/apis/api-service.d.ts:69:3
+    69   assetById(assetId: number | bigint): Promise<Asset>;
+         ~~~~~~~~~
+    'assetById' is declared here.
+
+src/api/algod.ts:85:90 - error TS2339: Property 'do' does not exist on type 'Promise<AccountAssetResponse>'.
+
+85     const accountAssetInfo = await algodClient.accountAssetInformation(address, assetId).do()
+                                                                                            ~~
+
+src/api/algod.ts:154:47 - error TS2339: Property 'do' does not exist on type 'Promise<NodeStatusResponse>'.
+
+154     const status = await algodClient.status().do()
+                                                  ~~
+
+src/api/algod.ts:164:62 - error TS2339: Property 'do' does not exist on type 'Promise<BlockResponse>'.
+
+164         const blockResponse = await algodClient.block(round).do()
+                                                                 ~~
+
+src/api/contracts.ts:237:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+237   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:252:69 - error TS18048: 'payValidatorMbr.fee' is possibly 'undefined'.
+
+252   const requiredBalance = (payValidatorMbr.payment?.amount ?? 0n) + payValidatorMbr.fee + 1000n
+                                                                        ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:320:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+320   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:330:5 - error TS18048: 'payValidatorAddPoolMbr.fee' is possibly 'undefined'.
+
+330     payValidatorAddPoolMbr.fee +
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:379:67 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+379   const stakingPoolClient = await getStakingPoolClient(poolAppId, signer, activeAddress)
+                                                                      ~~~~~~
+
+src/api/contracts.ts:388:9 - error TS2322: Type 'Transaction' is not assignable to type 'AppMethodCallTransactionArgument'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+388         mbrPayment: payPoolInitStorageMbr,
+            ~~~~~~~~~~
+
+src/api/contracts.ts:461:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+461   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:496:37 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transac
+tion").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_
+modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+496     simulateComposer.addTransaction(rewardTokenOptInTxn)
+                                        ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:515:52 - error TS18048: 'stakeTransferPayment.fee' is possibly 'undefined'.
+
+515     (stakeTransferPayment.payment?.amount ?? 0n) + stakeTransferPayment.fee + feeAmount.microAlgos
+                                                       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:525:59 - error TS2322: Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer").Transactio
+nSigner' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundat
+ion/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+525         stakedAmountPayment: { txn: stakeTransferPayment, signer },
+                                                              ~~~~~~
+
+src/api/contracts.ts:544:29 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transac
+tion").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_
+modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+544     composer.addTransaction(rewardTokenOptInTxn)
+                                ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:747:37 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transac
+tion").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_
+modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+747     simulateComposer.addTransaction(rewardTokenOptInTxn)
+                                        ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:765:67 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+765   const stakingPoolClient = await getStakingPoolClient(poolAppId, signer, activeAddress)
+                                                                      ~~~~~~
+
+src/api/contracts.ts:787:29 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transac
+tion").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_
+modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+787     composer.addTransaction(rewardTokenOptInTxn)
+                                ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:834:69 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+834     const stakingPoolClient = await getStakingPoolClient(poolAppId, signer, activeAddress)
+                                                                        ~~~~~~
+
+src/api/contracts.ts:927:7 - error TS2322: Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer").Transaction
+Signer' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundati
+on/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+927       defaultSigner: signer,
+          ~~~~~~~~~~~~~
+
+  ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/types/app-client.d.ts:215:3
+    215   defaultSigner?: TransactionSigner;
+          ~~~~~~~~~~~~~
+    The expected type comes from property 'defaultSigner' which is declared here on type '{ appId: bigint; appName?: string | undefined; defaultSender?: ReadableAddress | undefined;
+ defaultSigner?: TransactionSigner | undefined; approvalSourceMap?: ProgramSourceMap | undefined; clearSourceMap?: ProgramSourceMap | undefined; }'
+
+src/api/contracts.ts:957:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+957   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:975:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+975   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:993:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer"
+).TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+993   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                       ~~~~~~
+
+src/api/contracts.ts:1011:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer
+").TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/nod
+e_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+1011   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                        ~~~~~~
+
+src/api/contracts.ts:1032:52 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer
+").TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/nod
+e_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+1032   const validatorClient = await getValidatorClient(signer, activeAddress)
+                                                        ~~~~~~
+
+src/api/contracts.ts:1108:69 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer
+").TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/nod
+e_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+1108     const stakingPoolClient = await getStakingPoolClient(poolAppId, signer, activeAddress)
+                                                                         ~~~~~~
+
+src/api/contracts.ts:1112:23 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transa
+ction").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+1112       .addTransaction(payBoxStorageMbrTxn)
+                           ~~~~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:1113:23 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/transa
+ction").Transaction' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node
+_modules/@algorandfoundation/algokit-utils/packages/transact/src/transactions/transaction").Transaction'.
+  Type 'Transaction' is missing the following properties from type 'Transaction': rawTxId, txId, [TXN_SYMBOL]
+
+1113       .addTransaction(updateNfdAppCall)
+                           ~~~~~~~~~~~~~~~~
+
+src/api/contracts.ts:1149:46 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/signer
+").TransactionSigner' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/nod
+e_modules/@algorandfoundation/algokit-utils/packages/transact/src/signer").TransactionSigner'.
+  Types of parameters 'txnGroup' and 'txnGroup' are incompatible.
+    Type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages
+/transact/src/transactions/transaction").Transaction[]' is not assignable to type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algos
+dk/dist/types/transaction").Transaction[]'.
+      Type 'Transaction' is missing the following properties from type 'Transaction': getEncodingSchema, toEncodingData, estimateSize, bytesToSign, and 6 more.
+
+1149   const client = await getXGovRegistryClient(signer, activeAddress)
+                                                  ~~~~~~
+
+src/utils/balanceChecker.ts:34:5 - error TS2740: Type 'AlgodClient' is missing the following properties from type 'AlgodClient': versionsCheck, getBlockHash, getBlockTxids, pendingT
+ransactionsInformation, and 19 more.
+
+34     this.algodClient = ClientManager.getAlgodClient({
+       ~~~~~~~~~~~~~~~~
+
+src/utils/development.tsx:41:41 - error TS2551: Property 'getTransactionParams' does not exist on type 'AlgodClient'. Did you mean 'transactionParams'?
+
+41   const startParams = await algodClient.getTransactionParams().do()
+                                           ~~~~~~~~~~~~~~~~~~~~
+
+  ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/apis/api-service.d.ts:176:3
+    176   transactionParams(): Promise<SuggestedParams>;
+          ~~~~~~~~~~~~~~~~~
+    'transactionParams' is declared here.
+
+src/utils/development.tsx:78:45 - error TS2339: Property 'signTransaction' does not exist on type 'typeof import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorand
+foundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/index")'.
+
+78     const signedTransaction = await algokit.signTransaction(txn, testAccount)
+                                               ~~~~~~~~~~~~~~~
+
+src/utils/development.tsx:79:78 - error TS2339: Property 'do' does not exist on type 'Promise<PostTransactionsResponse>'.
+
+79     const { txid } = await algodClient.sendRawTransaction(signedTransaction).do()
+                                                                                ~~
+
+src/utils/development.tsx:85:42 - error TS2551: Property 'getTransactionParams' does not exist on type 'AlgodClient'. Did you mean 'transactionParams'?
+
+85   const resultParams = await algodClient.getTransactionParams().do()
+                                            ~~~~~~~~~~~~~~~~~~~~
+
+  ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/apis/api-service.d.ts:176:3
+    176   transactionParams(): Promise<SuggestedParams>;
+          ~~~~~~~~~~~~~~~~~
+    'transactionParams' is declared here.
+
+src/utils/development.tsx:179:47 - error TS2551: Property 'getTransactionParams' does not exist on type 'AlgodClient'. Did you mean 'transactionParams'?
+
+179     const suggestedParams = await algodClient.getTransactionParams().do()
+                                                  ~~~~~~~~~~~~~~~~~~~~
+
+  ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/apis/api-service.d.ts:176:3
+    176   transactionParams(): Promise<SuggestedParams>;
+          ~~~~~~~~~~~~~~~~~
+    'transactionParams' is declared here.
+
+src/utils/development.tsx:196:23 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.2
+9/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/client").AlgodClient' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/re
+ti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/client/v2/algod/algod").AlgodClient'.
+  Type 'AlgodClient' is missing the following properties from type 'AlgodClient': versionsCheck, getBlockHash, getBlockTxids, pendingTransactionsInformation, and 19 more.
+
+196     await atc.execute(algodClient, 4)
+                          ~~~~~~~~~~~
+
+src/utils/development.tsx:280:23 - error TS2345: Argument of type 'import("/Users/joe/git/algorandfoundation/reti/node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.2
+9/node_modules/@algorandfoundation/algokit-utils/packages/algod_client/src/client").AlgodClient' is not assignable to parameter of type 'import("/Users/joe/git/algorandfoundation/re
+ti/node_modules/.pnpm/algosdk@3.4.0/node_modules/algosdk/dist/types/client/v2/algod/algod").AlgodClient'.
+  Type 'AlgodClient' is missing the following properties from type 'AlgodClient': versionsCheck, getBlockHash, getBlockTxids, pendingTransactionsInformation, and 19 more.
+
+280     await atc.execute(algodClient, 4)
+                          ~~~~~~~~~~~
+
+
+Found 38 errors in 4 files.
+
+Errors  Files
+     5  src/api/algod.ts:19
+    25  src/api/contracts.ts:237
+     1  src/utils/balanceChecker.ts:34
+     7  src/utils/development.tsx:41
+ ELIFECYCLE  Command failed with exit code 2.
+
+~/git/algorandfoundation/reti/ui spike/utils_v10 ≡
+❯ 
