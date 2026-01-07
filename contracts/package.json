@@ -3,7 +3,9 @@
     "version": "1.4.3",
     "license": "MIT",
     "scripts": {
-        "generate-client": "algokit generate client contracts/artifacts/ --language typescript  --output contracts/clients/{contract_name}Client.ts && ./update_contract_artifacts.sh",
+        "generate-client:staking_pool": "npx @algorandfoundation/algokit-client-generator generate -o contracts/clients/StakingPoolClient.ts -a contracts/artifacts/StakingPool.arc56.json",
+        "generate-client:validator_registry": "npx @algorandfoundation/algokit-client-generator generate -o contracts/clients/ValidatorRegistryClient.ts -a contracts/artifacts/ValidatorRegistry.arc56.json",
+        "generate-client": "pnpm run generate-client:staking_pool && pnpm run generate-client:validator_registry && ./update_contract_artifacts.sh",
         "compile-contract": "tealscript contracts/*.algo.ts contracts/artifacts",
         "generate-components": "algokit-generate-component contracts/artifacts/validatorRegistry.arc32.json contracts/artifacts/components",
         "noalgobuild": "pnpm run compile-contract -- --skip-algod && pnpm run generate-client",
@@ -18,11 +20,11 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@algorandfoundation/algokit-utils": "9.1.2",
+        "@algorandfoundation/algokit-utils": "10.0.0-alpha.29",
         "algosdk": "3.4.0"
     },
     "devDependencies": {
-        "@algorandfoundation/algokit-client-generator": "6.0.0",
+        "@algorandfoundation/algokit-client-generator": "7.0.0-alpha.6",
         "@algorandfoundation/tealscript": "0.106.1",
         "@joe-p/algokit-generate-component": "0.2.1",
         "@typescript-eslint/eslint-plugin": "8.8.1",

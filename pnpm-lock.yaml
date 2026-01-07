@@ -11,15 +11,15 @@ importers:
   contracts:
     dependencies:
       '@algorandfoundation/algokit-utils':
-        specifier: 9.1.2
-        version: 9.1.2(algosdk@3.4.0)
+        specifier: 10.0.0-alpha.29
+        version: 10.0.0-alpha.29
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
     devDependencies:
       '@algorandfoundation/algokit-client-generator':
-        specifier: 6.0.0
-        version: 6.0.0(@algorandfoundation/algokit-utils@9.1.2(algosdk@3.4.0))(algosdk@3.4.0)
+        specifier: 7.0.0-alpha.6
+        version: 7.0.0-alpha.6(@algorandfoundation/algokit-utils@10.0.0-alpha.29)
       '@algorandfoundation/tealscript':
         specifier: 0.106.1
         version: 0.106.1
@@ -62,9 +62,12 @@ importers:
 
   contracts/bootstrap:
     dependencies:
+      '@algorandfoundation/algokit-client-generator':
+        specifier: 7.0.0-alpha.6
+        version: 7.0.0-alpha.6(@algorandfoundation/algokit-utils@10.0.0-alpha.29)
       '@algorandfoundation/algokit-utils':
-        specifier: 9.1.2
-        version: 9.1.2(algosdk@3.4.0)
+        specifier: 10.0.0-alpha.29
+        version: 10.0.0-alpha.29
       algosdk:
         specifier: 3.4.0
         version: 3.4.0
@@ -93,12 +96,15 @@ importers:
 
   ui:
     dependencies:
+      '@algorandfoundation/algokit-client-generator':
+        specifier: 7.0.0-alpha.6
+        version: 7.0.0-alpha.6(@algorandfoundation/algokit-utils@10.0.0-alpha.29)
       '@algorandfoundation/algokit-utils':
-        specifier: 9.1.2
-        version: 9.1.2(algosdk@3.4.0)
+        specifier: 10.0.0-alpha.29
+        version: 10.0.0-alpha.29
       '@algorandfoundation/xgov-clients':
         specifier: ^3.0.1
-        version: 3.0.1(@algorandfoundation/algokit-utils@9.1.2(algosdk@3.4.0))(algosdk@3.4.0)
+        version: 3.0.1(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)
       '@blockshake/defly-connect':
         specifier: 1.2.1
         version: 1.2.1(algosdk@3.4.0)
@@ -364,19 +370,16 @@ packages:
   '@adraffy/ens-normalize@1.11.0':
     resolution: {integrity: sha512-/3DDPKHqqIqxUULp8yP4zODUY1i+2xvVWsv8A79xGWdCAG+8sb0hRh0Rk2QyOJUnnbyPUAZYcpBuRe3nS2OIUg==}
 
-  '@algorandfoundation/algokit-client-generator@6.0.0':
-    resolution: {integrity: sha512-K6P3uqb3XCQNGYBo3PiBxTy6XUGG0BDeSph2zlaAWJTW2yu1Cidrrwt73t0JZxGJvm1b789rs57/KuoC5YK/lQ==}
+  '@algorandfoundation/algokit-client-generator@7.0.0-alpha.6':
+    resolution: {integrity: sha512-ZwzX4EuMuPdTgSU+rNlwKywZeZ9m+/ovimmbyhMUJkVj1fGLK3PY08Rmk5hkdIKM83ntX9BUTPjenx2T+1KuaA==}
     engines: {node: '>=20.0'}
     hasBin: true
     peerDependencies:
-      '@algorandfoundation/algokit-utils': ^9.0.0
-      algosdk: ^3.2.0
+      '@algorandfoundation/algokit-utils': ^10.0.0-alpha.25
 
-  '@algorandfoundation/algokit-utils@9.1.2':
-    resolution: {integrity: sha512-gZTg9H5FAce+QcT79y8Eun8by+MtlgocYjIUvP2ahh2O0U0HCcTSjVux5lQZj5+EsSaL3sR0p+BmjXnPAMplbA==}
+  '@algorandfoundation/algokit-utils@10.0.0-alpha.29':
+    resolution: {integrity: sha512-vDAVAyKt4BKKY1oPffe11jxiJpma7mUMT3wQd8HNeTV39UHfq+6Qnjrk1oGaNDVT+60SydCY11yE2mzVypKt9Q==}
     engines: {node: '>=20.0'}
-    peerDependencies:
-      algosdk: ^3.0.0
 
   '@algorandfoundation/tealscript@0.106.1':
     resolution: {integrity: sha512-aQpLHfz6+f5WoTWs9U6AbFysS8dw65iCjk2jxkqE+l137i4ZQF01GC8OndTyVX97RTSwjoBay/gJ2jk1JBdyeA==}
@@ -2296,6 +2299,7 @@ packages:
 
   '@walletconnect/modal@2.7.0':
     resolution: {integrity: sha512-RQVt58oJ+rwqnPcIvRFeMGKuXb9qkgSmwz4noF8JZGUym3gUAzVs+uW2NQ1Owm9XOJAV+sANrtJ+VoVq1ftElw==}
+    deprecated: Please follow the migration guide on https://docs.reown.com/appkit/upgrade/wcm
 
   '@walletconnect/randombytes@1.0.3':
     resolution: {integrity: sha512-35lpzxcHFbTN3ABefC9W+uBpNZl1GC4Wpx0ed30gibfO/y9oLdy1NznbV96HARQKSBV9J9M/rrtIvf6a23jfYw==}
@@ -2314,6 +2318,7 @@ packages:
 
   '@walletconnect/sign-client@2.20.2':
     resolution: {integrity: sha512-KyeDToypZ1OjCbij4Jx0cAg46bMwZ6zCKt0HzCkqENcex3Zchs7xBp9r8GtfEMGw+PUnXwqrhzmLBH0x/43oIQ==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/socket-transport@1.8.0':
     resolution: {integrity: sha512-5DyIyWrzHXTcVp0Vd93zJ5XMW61iDM6bcWT4p8DTRfFsOtW46JquruMhxOLeCOieM4D73kcr3U7WtyR4JUsGuQ==}
@@ -5422,19 +5427,23 @@ snapshots:
 
   '@adraffy/ens-normalize@1.11.0': {}
 
-  '@algorandfoundation/algokit-client-generator@6.0.0(@algorandfoundation/algokit-utils@9.1.2(algosdk@3.4.0))(algosdk@3.4.0)':
+  '@algorandfoundation/algokit-client-generator@7.0.0-alpha.6(@algorandfoundation/algokit-utils@10.0.0-alpha.29)':
     dependencies:
-      '@algorandfoundation/algokit-utils': 9.1.2(algosdk@3.4.0)
-      algosdk: 3.4.0
+      '@algorandfoundation/algokit-utils': 10.0.0-alpha.29
       chalk: 5.6.0
       change-case: 5.4.4
       commander: 14.0.0
       jsonschema: 1.5.0
 
-  '@algorandfoundation/algokit-utils@9.1.2(algosdk@3.4.0)':
+  '@algorandfoundation/algokit-utils@10.0.0-alpha.29':
     dependencies:
-      algosdk: 3.4.0
+      algorand-msgpack: 1.1.0
       buffer: 6.0.3
+      hi-base32: 0.5.1
+      js-sha512: 0.8.0
+      json-bigint: 1.0.0
+      tweetnacl: 1.0.3
+      vlq: 2.0.4
 
   '@algorandfoundation/tealscript@0.106.1':
     dependencies:
@@ -5454,9 +5463,9 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@algorandfoundation/xgov-clients@3.0.1(@algorandfoundation/algokit-utils@9.1.2(algosdk@3.4.0))(algosdk@3.4.0)':
+  '@algorandfoundation/xgov-clients@3.0.1(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)':
     dependencies:
-      '@algorandfoundation/algokit-utils': 9.1.2(algosdk@3.4.0)
+      '@algorandfoundation/algokit-utils': 10.0.0-alpha.29
       algosdk: 3.4.0
 
   '@alloc/quick-lru@5.2.0': {}

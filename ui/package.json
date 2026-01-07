@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@9.15.9",
   "engines": {
-    "node": "20"
+    "node": "24"
   },
   "devDependencies": {
     "@playwright/test": "1.48.0",
@@ -38,7 +38,8 @@
     "vitest": "2.1.2"
   },
   "dependencies": {
-    "@algorandfoundation/algokit-utils": "9.1.2",
+    "@algorandfoundation/algokit-client-generator": "7.0.0-alpha.6",
+    "@algorandfoundation/algokit-utils": "10.0.0-alpha.29",
     "@algorandfoundation/xgov-clients": "^3.0.1",
     "@blockshake/defly-connect": "1.2.1",
     "@hookform/resolvers": "3.9.0",
