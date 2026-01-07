@@ -1,8 +1,8 @@
 import { ClientManager } from '@algorandfoundation/algokit-utils/types/client-manager'
-import algosdk from 'algosdk'
 import { BigMath } from '@/utils/bigint'
 import { formatAlgoAmount } from '@/utils/format'
 import { getAlgodConfigFromViteEnvironment } from '@/utils/network/getAlgoClientConfigs'
+import { AlgodClient } from '@algorandfoundation/algokit-utils/algod-client'
 
 export class InsufficientBalanceError extends Error {
   public toastMessage: string
@@ -25,7 +25,7 @@ export class InsufficientBalanceError extends Error {
 
 export class BalanceChecker {
   private address: string
-  private algodClient: algosdk.Algodv2
+  private algodClient: AlgodClient
 
   private constructor(address: string) {
     this.address = address
@@ -39,7 +39,8 @@ export class BalanceChecker {
   }
 
   private async getAvailableBalance(): Promise<bigint> {
-    const accountInfo = await this.algodClient.accountInformation(this.address).exclude('all').do()
+    const accountInfo = await this.algodClient.accountInformation(this.address, { exclude: 'all' })
+
     const availableBalance = BigMath.max(0n, accountInfo.amount - accountInfo.minBalance)
     return availableBalance
   }

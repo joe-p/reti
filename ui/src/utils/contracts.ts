@@ -16,6 +16,7 @@ import { LocalPoolInfo, NodeInfo, PoolData, Validator } from '@/interfaces/valid
 import { BigMath } from '@/utils/bigint'
 import { dayjs } from '@/utils/dayjs'
 import { convertToBaseUnits, roundToFirstNonZeroDecimal, roundToWholeAlgos } from '@/utils/format'
+import { Asset, AssetHolding } from '@algorandfoundation/algokit-utils/algod-client'
 
 /**
  * Process node pool assignment configuration data into an array with each node's available slot count
@@ -125,7 +126,7 @@ interface TransformedGatingAssets {
 export function transformEntryGatingAssets(
   type: string,
   assetIds: Array<{ value: string }>,
-  assets: Array<algosdk.modelsv2.Asset | null>,
+  assets: Array<Asset | null>,
   minBalance: string,
   nfdCreatorAppId: bigint,
   nfdParentAppId: bigint,
@@ -349,7 +350,7 @@ export function canManageValidator(activeAddress: string | null, validator: Vali
 export async function fetchValueToVerify(
   validator: Validator | null,
   activeAddress: string | null,
-  heldAssets: algosdk.modelsv2.AssetHolding[],
+  heldAssets: AssetHolding[],
 ): Promise<bigint> {
   if (!validator || !activeAddress) {
     throw new Error('Validator or active address not found')
@@ -363,7 +364,7 @@ export async function fetchValueToVerify(
     const accountInfo = await fetchAccountInformation(creatorAddress)
 
     if (accountInfo.createdAssets) {
-      const assetIds = accountInfo.createdAssets.map((asset) => BigInt(asset.index))
+      const assetIds = accountInfo.createdAssets.map((asset) => BigInt(asset.id))
       return findValueToVerify(heldAssets, assetIds, minBalance)
     }
   }
@@ -384,7 +385,7 @@ export async function fetchValueToVerify(
       .map((accountInfo) => accountInfo.createdAssets)
       .flat()
       .filter((asset) => !!asset)
-      .map((asset) => BigInt(asset!.index))
+      .map((asset) => BigInt(asset!.id))
 
     return findValueToVerify(heldAssets, assetIds, minBalance)
   }
@@ -422,7 +423,7 @@ export async function fetchValueToVerify(
  * @returns {number} Gating asset ID that meets the minimum balance requirement or 0 if not found
  */
 export function findValueToVerify(
-  heldAssets: algosdk.modelsv2.AssetHolding[],
+  heldAssets: AssetHolding[],
   gatingAssets: bigint[],
   minBalance: bigint,
 ): bigint {
@@ -546,10 +547,7 @@ export function setValidatorQueriesData(queryClient: QueryClient, data: Validato
 
   // Prefetch enrichment data if available
   if (data.rewardToken) {
-    queryClient.setQueryData<algosdk.modelsv2.Asset>(
-      ['asset', Number(data.config.rewardTokenId)],
-      data.rewardToken,
-    )
+    queryClient.setQueryData<Asset>(['asset', Number(data.config.rewardTokenId)], data.rewardToken)
   }
   if (data.nfd) {
     queryClient.setQueryData<Nfd>(['nfd', data.config.nfdForInfo.toString()], data.nfd)
@@ -557,7 +555,7 @@ export function setValidatorQueriesData(queryClient: QueryClient, data: Validato
   if (data.gatingAssets) {
     data.gatingAssets.forEach((asset) => {
       if (asset) {
-        queryClient.setQueryData<algosdk.modelsv2.Asset>(['asset', Number(asset.index)], asset)
+        queryClient.setQueryData<Asset>(['asset', Number(asset.id)], asset)
       }
     })
   }

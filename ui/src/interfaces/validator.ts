@@ -7,6 +7,7 @@ import {
   ValidatorCurState,
   ValidatorPoolKey,
 } from '@/contracts/ValidatorRegistryClient'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 export type EntryGatingAssets = [bigint, bigint, bigint, bigint]
 // export type EntryGatingAssets = bigint[]
@@ -44,8 +45,8 @@ export type Validator = {
   nodePoolAssignment: NodePoolAssignmentConfig
   rewardsBalance?: bigint
   roundsSinceLastPayout?: bigint
-  rewardToken?: algosdk.modelsv2.Asset
-  gatingAssets?: algosdk.modelsv2.Asset[]
+  rewardToken?: Asset
+  gatingAssets?: Asset[]
   nfd?: Nfd
   apy?: number
   extDeposits?: number

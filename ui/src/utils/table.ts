@@ -20,7 +20,7 @@ export const globalFilterFn: FilterFn<Validator> = (row, columnId, filterValue) 
 
   const rewardToken = validator.rewardToken
   if (rewardToken) {
-    const tokenId = rewardToken.index.toString()
+    const tokenId = rewardToken.id.toString()
     const { name, unitName } = rewardToken.params
     const tokenName = name?.toLowerCase() ?? ''
     const tokenUnitName = unitName?.toLowerCase() ?? ''
@@ -32,7 +32,7 @@ export const globalFilterFn: FilterFn<Validator> = (row, columnId, filterValue) 
 
   const gatingAssets = validator.gatingAssets
   if (gatingAssets) {
-    const assetIds = gatingAssets.map((asset) => asset.index.toString())
+    const assetIds = gatingAssets.map((asset) => asset.id.toString())
     const assetNames = gatingAssets.map((asset) => asset.params.name?.toLowerCase() ?? '')
     const assetUnitnames = gatingAssets.map((asset) => asset.params.unitName?.toLowerCase() ?? '')
 

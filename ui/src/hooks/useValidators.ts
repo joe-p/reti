@@ -16,6 +16,7 @@ import {
 import { GatingType } from '@/constants/gating'
 import { useQueuedQueries } from '@/hooks/useQueuedQueries'
 import { Validator } from '@/interfaces/validator'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 /**
  * Fetches all validator data and enrichment data in parallel.
@@ -135,7 +136,7 @@ export function useValidators(): {
       // Add enrichment data if available
       if (baseValidator.config.rewardTokenId > 0) {
         const rewardToken = rewardTokenQueries.find(
-          (q) => q.data?.index === baseValidator.config.rewardTokenId,
+          (q) => q.data?.id === baseValidator.config.rewardTokenId,
         )?.data
         if (rewardToken) {
           baseValidator.rewardToken = rewardToken
@@ -144,8 +145,8 @@ export function useValidators(): {
 
       if (baseValidator.config.entryGatingType === GatingType.AssetId) {
         baseValidator.gatingAssets = baseValidator.config.entryGatingAssets
-          .map((assetId) => gatingAssetQueries.find((q) => q.data?.index === assetId)?.data)
-          .filter(Boolean) as algosdk.modelsv2.Asset[]
+          .map((assetId) => gatingAssetQueries.find((q) => q.data?.id === assetId)?.data)
+          .filter(Boolean) as Asset[]
       }
 
       if (baseValidator.config.nfdForInfo > 0) {

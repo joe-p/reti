@@ -1,3 +1,4 @@
+import { TransactionSigner } from '@algorandfoundation/algokit-utils/transact'
 import type { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import type algosdk from 'algosdk'
 
@@ -19,7 +20,7 @@ export type TransactionStateInfo = Omit<
 
 export interface TransactionHandlerProps {
   activeAddress: string | null
-  innerSigner: algosdk.TransactionSigner
+  innerSigner: TransactionSigner
   setStatus: (status: TransactionState) => void
   refetch: ((options?: RefetchOptions) => Promise<QueryObserverResult<unknown, Error>>)[]
 }

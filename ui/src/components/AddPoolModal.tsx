@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ProgressBar } from '@tremor/react'
 import { useWallet } from '@txnlab/use-wallet-react'
-import algosdk, { getApplicationAddress } from 'algosdk'
 import { CheckIcon, Copy } from 'lucide-react'
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
@@ -58,6 +57,7 @@ import { cn } from '@/utils/ui'
 import { useRegistry } from '@/hooks/useRegistry'
 import { useTheme } from '@/providers/ThemeProvider'
 import { useRequestBoxes } from '@/hooks/useRequestBoxes'
+import { getApplicationAddress } from '@algorandfoundation/algokit-utils'
 
 interface AddPoolModalProps {
   validator: Validator | null
@@ -252,7 +252,7 @@ export function AddPoolModal({
 
       setPoolKey(stakingPoolKey)
 
-      const poolAppAddress = algosdk.getApplicationAddress(stakingPoolKey.poolAppId)
+      const poolAppAddress = getApplicationAddress(stakingPoolKey.poolAppId)
       setPoolAddress(poolAppAddress.toString())
 
       toast.success(`Staking pool ${stakingPoolKey.poolId} created!`, {
@@ -384,7 +384,7 @@ export function AddPoolModal({
       await requestSubscribeXGov({
         activeAddress,
         innerSigner: transactionSigner,
-        setStatus: () => {},
+        setStatus: () => { },
         refetch: [xGovRequests.refetch],
         xgovFee: registry.data.xgovFee,
         pools: [poolAddress],

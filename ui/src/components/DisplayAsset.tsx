@@ -1,10 +1,10 @@
-import algosdk from 'algosdk'
 import * as React from 'react'
 import { ExplorerLink } from '@/utils/explorer'
 import { cn } from '@/utils/ui'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 interface DisplayAssetProps {
-  asset?: algosdk.modelsv2.Asset
+  asset?: Asset
   show?: 'name' | 'unit-name' | 'full'
   link?: boolean
   fallback?: React.ReactNode
@@ -22,7 +22,7 @@ export function DisplayAsset({
     return <span className="font-mono">{unitName}</span>
   }
 
-  const renderDisplayAsset = (asset: algosdk.modelsv2.Asset) => {
+  const renderDisplayAsset = (asset: Asset) => {
     const { name, unitName } = asset.params
 
     if (unitName && show === 'unit-name') {
@@ -51,7 +51,7 @@ export function DisplayAsset({
       return renderUnitName(unitName)
     }
 
-    return asset.index.toString()
+    return asset.id.toString()
   }
 
   if (!asset) {
@@ -61,7 +61,7 @@ export function DisplayAsset({
   if (link) {
     return (
       <a
-        href={ExplorerLink.asset(asset.index)}
+        href={ExplorerLink.asset(asset.id)}
         rel="noreferrer"
         target="_blank"
         className={cn('link text-foreground', className)}

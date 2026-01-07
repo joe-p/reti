@@ -9,7 +9,7 @@ import {
   roundToFirstNonZeroDecimal,
   roundToWholeAlgos,
 } from '@/utils/format'
-
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 describe('convertFromBaseUnits', () => {
   it('should convert from base units correctly', () => {
     expect(convertFromBaseUnits(1000000, 6)).toBe(1)
@@ -165,10 +165,10 @@ describe('formatAssetAmount', () => {
     total: 1000000n,
     unitName: 'TEST',
   })
-  const asset = new algosdk.modelsv2.Asset({
+  const asset: Asset = {
     params,
-    index: 12345n,
-  })
+    id: 12345n,
+  }
 
   it('should format asset amount correctly with default options', () => {
     const result = formatAssetAmount(asset, 1234567890)

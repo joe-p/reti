@@ -1,3 +1,4 @@
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 import algosdk from 'algosdk'
 import Big from 'big.js'
 /**
@@ -196,7 +197,7 @@ type FormatAssetAmountOptions = Omit<FormatAmountOptions, 'decimals'> & {
  * @see {@link formatAmount}
  */
 export function formatAssetAmount(
-  asset: algosdk.modelsv2.Asset,
+  asset: Asset,
   amount: number | bigint | string,
   options: FormatAssetAmountOptions = {},
 ): string {

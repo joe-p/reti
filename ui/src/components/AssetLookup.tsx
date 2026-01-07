@@ -8,6 +8,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input'
 import { AlgodHttpError } from '@/interfaces/algod'
 import { cn } from '@/utils/ui'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 const ERROR_EMPTY_FIELD = 'No asset ID entered'
 const ERROR_NOT_FOUND = 'Asset not found'
@@ -21,8 +22,8 @@ interface AssetLookupProps<
   form: UseFormReturn<TFieldValues>
   id: string
   name: TName
-  asset: algosdk.modelsv2.Asset | null
-  setAsset: (asset: algosdk.modelsv2.Asset | null) => void
+  asset: Asset | null
+  setAsset: (asset: Asset | null) => void
   isFetching: boolean
   setIsFetching: (isFetching: boolean) => void
   errorMessage?: string

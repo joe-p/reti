@@ -6,6 +6,7 @@ import { GatingType } from '@/constants/gating'
 import { convertToBaseUnits } from '@/utils/format'
 import { isValidName, isValidRoot } from '@/utils/nfd'
 import { Constraints } from '@/contracts/ValidatorRegistryClient'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 /**
  * Validator schema definitions for form validation
@@ -310,7 +311,7 @@ export const entryGatingRefinement = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any,
   ctx: RefinementCtx,
-  assets: Array<algosdk.modelsv2.Asset | null>,
+  assets: Array<Asset | null>,
 ) => {
   const {
     entryGatingType,
@@ -471,7 +472,7 @@ export const entryGatingRefinement = (
           message: 'Invalid minimum balance',
         })
       } else {
-        const asset = assets.find((asset) => asset?.index === entryGatingAssets[0].value)
+        const asset = assets.find((asset) => asset?.id === entryGatingAssets[0].value)
         if (asset) {
           const minBalanceBaseUnits = convertToBaseUnits(
             gatingAssetMinBalance,

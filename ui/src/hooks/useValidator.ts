@@ -13,6 +13,7 @@ import {
 } from '@/api/queries'
 import { GatingType } from '@/constants/gating'
 import { Validator } from '@/interfaces/validator'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 /**
  * Fetches validator data and enrichment data in parallel.
@@ -78,9 +79,7 @@ export function useValidator(validatorId: number): Validator | undefined {
     }
 
     if (baseValidator.config.entryGatingType === GatingType.AssetId) {
-      baseValidator.gatingAssets = gatingAssetQueries
-        .map((q) => q.data)
-        .filter(Boolean) as algosdk.modelsv2.Asset[]
+      baseValidator.gatingAssets = gatingAssetQueries.map((q) => q.data).filter(Boolean) as Asset[]
     }
 
     if (nfdQuery?.data) {

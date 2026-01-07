@@ -1,9 +1,14 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { ClientManager } from '@algorandfoundation/algokit-utils/types/client-manager'
-import algosdk from 'algosdk'
 import { AccountBalance, AlgodHttpError, AssetCreatorHolding, Exclude } from '@/interfaces/algod'
 import { BigMath } from '@/utils/bigint'
 import { getAlgodConfigFromViteEnvironment } from '@/utils/network/getAlgoClientConfigs'
+import {
+  Account,
+  AccountAssetResponse,
+  Asset,
+  AssetHolding,
+} from '@algorandfoundation/algokit-utils/algod-client'
 
 const algodConfig = getAlgodConfigFromViteEnvironment()
 const algodClient = ClientManager.getAlgodClient({
@@ -15,8 +20,10 @@ const algodClient = ClientManager.getAlgodClient({
 export async function fetchAccountInformation(
   address: string,
   exclude: Exclude = 'none',
-): Promise<algosdk.modelsv2.Account> {
-  const accountInfo = await algodClient.accountInformation(address).exclude(exclude).do()
+): Promise<Account> {
+  // MIGRATION FIXME: Exlude seems to be wrong
+  // @ts-expect-error the union in algod client seems to be wrong
+  const accountInfo = await algodClient.accountInformation(address, { exclude })
   return accountInfo
 }
 
@@ -29,9 +36,9 @@ export async function fetchAccountBalance(
   return availableBalance ? accountInfo.amount - accountInfo.minBalance : accountInfo.amount
 }
 
-export async function fetchAsset(assetId: bigint | number): Promise<algosdk.modelsv2.Asset> {
+export async function fetchAsset(assetId: bigint | number): Promise<Asset> {
   try {
-    const asset = await algodClient.getAssetByID(assetId).do()
+    const asset = await algodClient.assetById(assetId)
     return asset
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -60,9 +67,7 @@ export async function fetchBalance(address: string | null): Promise<AccountBalan
   }
 }
 
-export async function fetchAssetHoldings(
-  address: string | null,
-): Promise<algosdk.modelsv2.AssetHolding[]> {
+export async function fetchAssetHoldings(address: string | null): Promise<AssetHolding[]> {
   if (!address) {
     throw new Error('No address provided')
   }
@@ -74,7 +79,7 @@ export async function fetchAssetHoldings(
 export async function fetchAccountAssetInformation(
   address: string | null,
   assetId: bigint,
-): Promise<algosdk.modelsv2.AccountAssetResponse> {
+): Promise<AccountAssetResponse> {
   if (!address) {
     throw new Error('No address provided')
   }
@@ -82,7 +87,7 @@ export async function fetchAccountAssetInformation(
     throw new Error('No assetId provided')
   }
   try {
-    const accountAssetInfo = await algodClient.accountAssetInformation(address, assetId).do()
+    const accountAssetInfo = await algodClient.accountAssetInformation(address, assetId)
     return accountAssetInfo
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -151,7 +156,7 @@ export async function fetchAssetCreatorHoldings(
  */
 export async function fetchBlockTimes(numRounds: number = 10): Promise<number[]> {
   try {
-    const status = await algodClient.status().do()
+    const status = await algodClient.status()
     if (!status) {
       throw new Error('Failed to fetch node status')
     }
@@ -161,7 +166,7 @@ export async function fetchBlockTimes(numRounds: number = 10): Promise<number[]>
     const blockTimes: number[] = []
     for (let round = lastRound - numRounds; round < lastRound; round++) {
       try {
-        const blockResponse = await algodClient.block(round).do()
+        const blockResponse = await algodClient.block(round)
         const block = blockResponse.block
         blockTimes.push(Number(block.header.timestamp))
       } catch (error) {

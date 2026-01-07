@@ -1,5 +1,5 @@
 import type { TransactionState } from '@/api/transactionState'
-import type { TransactionSigner } from 'algosdk'
+import type { TransactionSigner } from '@algorandfoundation/algokit-utils/transact'
 import { useMemo, useState } from 'react'
 
 export function isLoadingState(state: TransactionState) {

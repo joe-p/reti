@@ -1,8 +1,9 @@
+import { AssetHolding } from '@algorandfoundation/algokit-utils/algod-client'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import algosdk, { BaseHTTPClientError, BaseHTTPClientResponse } from 'algosdk'
+import { BaseHTTPClientError, BaseHTTPClientResponse } from 'algosdk'
 
 export interface AssetCreatorHolding extends Omit<
-  algosdk.modelsv2.AssetHolding,
+  AssetHolding,
   'getEncodingSchema' | 'toEncodingData'
 > {
   creator: string

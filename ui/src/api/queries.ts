@@ -23,6 +23,7 @@ import { Nfd, NfdGetLookupParams, NfdGetNFDParams } from '@/interfaces/nfd'
 import { calculateValidatorPoolMetrics } from '@/utils/contracts'
 import { resolveIpfsUrl } from '@/utils/ipfs'
 import { fetchNodely24hPerf } from '@/api/nodely'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 ////////////////////////////////////////////////////////////
 // Core protocol data queries
@@ -195,7 +196,7 @@ export const nfdLookupQueryOptions = (
 ////////////////////////////////////////////////////////////
 
 export const assetQueryOptions = (assetId: number) =>
-  queryOptions<algosdk.modelsv2.Asset>({
+  queryOptions<Asset>({
     queryKey: ['asset', assetId],
     queryFn: () => fetchAsset(assetId),
     staleTime: Infinity,

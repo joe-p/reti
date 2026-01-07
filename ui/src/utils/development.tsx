@@ -18,6 +18,8 @@ import { convertToStringTypes } from '@/utils/convert'
 import { convertToBaseUnits, formatAssetAmount } from '@/utils/format'
 import { getAlgodConfigFromViteEnvironment } from '@/utils/network/getAlgoClientConfigs'
 import { ValidatorConfig } from '@/contracts/ValidatorRegistryClient'
+import { sdkTxnToAlgokit, signTransaction, algokitSignerToSdk, algokitAlgodToSdk } from './utils_v10'
+import { TransactionSigner } from '@algorandfoundation/algokit-utils/transact'
 
 const algodConfig = getAlgodConfigFromViteEnvironment()
 
@@ -38,7 +40,7 @@ export async function incrementRoundNumberBy(rounds: number) {
     throw new Error('Increment round number is only available in development mode')
   }
 
-  const startParams = await algodClient.getTransactionParams().do()
+  const startParams = await algodClient.transactionParams()
 
   let result = {
     rounds,
@@ -75,14 +77,14 @@ export async function incrementRoundNumberBy(rounds: number) {
       suggestedParams: startParams,
     })
 
-    const signedTransaction = await algokit.signTransaction(txn, testAccount)
-    const { txid } = await algodClient.sendRawTransaction(signedTransaction).do()
-    txnId = txid
+    const signedTransaction = await signTransaction(sdkTxnToAlgokit(txn), testAccount)
+    const { txId } = await algodClient.sendRawTransaction(signedTransaction)
+    txnId = txId
   }
 
   await algokit.waitForConfirmation(txnId, rounds + 1, algodClient)
 
-  const resultParams = await algodClient.getTransactionParams().do()
+  const resultParams = await algodClient.transactionParams()
 
   result = {
     ...result,
@@ -95,7 +97,7 @@ export async function incrementRoundNumberBy(rounds: number) {
 
 export async function triggerPoolPayouts(
   pools: StakerPoolData[],
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   if (process.env.NODE_ENV !== 'development') {
@@ -153,7 +155,7 @@ export async function simulateEpoch(
   validator: Validator,
   pools: StakerPoolData[],
   rewardAmount: number,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
   queryClient: QueryClient,
   router: ReturnType<typeof useRouter>,
@@ -171,12 +173,12 @@ export async function simulateEpoch(
 
     toast.loading(
       `Sign to send ${AlgoAmount.Algos(rewardAmount).algos} ALGO reward to ` +
-        `${`${pools.length} pool${pools.length > 1 ? 's' : ''}`}`,
+      `${`${pools.length} pool${pools.length > 1 ? 's' : ''}`}`,
       { id: toastId },
     )
 
     const atc = new algosdk.AtomicTransactionComposer()
-    const suggestedParams = await algodClient.getTransactionParams().do()
+    const suggestedParams = await algodClient.transactionParams()
 
     // Create atomic transaction to send rewards to each pool
     for (const pool of pools) {
@@ -189,11 +191,12 @@ export async function simulateEpoch(
         suggestedParams,
       })
 
-      atc.addTransaction({ txn: paymentTxn, signer })
+      atc.addTransaction({ txn: paymentTxn, signer: algokitSignerToSdk(signer) })
     }
 
+
     // Send rewards to each pool
-    await atc.execute(algodClient, 4)
+    await atc.execute(algokitAlgodToSdk(algodClient), 4)
 
     toast.success('ALGO rewards sent to pools!', { id: toastId, duration: 3000 })
 
@@ -247,7 +250,7 @@ export async function simulateEpoch(
 export async function sendRewardTokensToPool(
   validator: Validator,
   rewardTokenAmount: number,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const toastId = 'send-reward-tokens-to-pool'
@@ -276,8 +279,8 @@ export async function sendRewardTokensToPool(
       suggestedParams,
     })
 
-    atc.addTransaction({ txn: assetTxn, signer })
-    await atc.execute(algodClient, 4)
+    atc.addTransaction({ txn: assetTxn, signer: algokitSignerToSdk(signer) })
+    await atc.execute(algokitAlgodToSdk(algodClient), 4)
 
     const poolAccountInfo = await fetchAccountInformation(poolAddress.toString())
     const assetHolding = poolAccountInfo.assets?.find((a) => a.assetId === tokenId)

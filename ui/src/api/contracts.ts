@@ -38,6 +38,9 @@ import { TransactionHandlerProps } from './transactionState'
 import { wrapTransactionSigner } from '@/hooks/useTransactionState'
 import { sleep } from '@/utils/time'
 import { fetchNodelyVotingPerf } from '@/api/nodely'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
+import { TransactionSigner } from '@algorandfoundation/algokit-utils/transact'
+import { sdkTxnToAlgokit } from '@/utils/utils_v10'
 
 export async function fetchNumValidators(): Promise<number> {
   const validatorClient = await getSimulateValidatorClient()
@@ -205,7 +208,7 @@ export async function fetchValidator(validatorId: number): Promise<Validator> {
           return null
         }),
       ).then((assets) => {
-        validator.gatingAssets = assets.filter(Boolean) as algosdk.modelsv2.Asset[]
+        validator.gatingAssets = assets.filter(Boolean) as Asset[]
       }),
     )
   }
@@ -231,7 +234,7 @@ export class ValidatorNotFoundError extends Error {}
 export async function addValidator(
   values: ValidatorConfigInput,
   nfdAppId: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -249,7 +252,9 @@ export async function addValidator(
   })
 
   // Check balance
-  const requiredBalance = (payValidatorMbr.payment?.amount ?? 0n) + payValidatorMbr.fee + 1000n
+  // MIGRATION NOTE: fee changed from required to optional
+  const requiredBalance =
+    (payValidatorMbr.payment?.amount ?? 0n) + (payValidatorMbr.fee ?? 0n) + 1000n
   await BalanceChecker.check(activeAddress, requiredBalance, 'Add validator')
 
   const entryGatingType = Number(values.entryGatingType || 0)
@@ -314,7 +319,7 @@ export async function addStakingPool(
   validatorId: bigint,
   nodeNum: number,
   poolMbr: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<ValidatorPoolKey> {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -327,7 +332,7 @@ export async function addStakingPool(
   // Check balance
   const requiredBalance =
     (payValidatorAddPoolMbr.payment?.amount ?? 0n) +
-    payValidatorAddPoolMbr.fee +
+    (payValidatorAddPoolMbr.fee ?? 0n) +
     1000n +
     1000n +
     2000n
@@ -353,7 +358,7 @@ export async function initStakingPoolStorage(
   poolAppId: bigint,
   poolInitMbr: bigint,
   optInRewardToken: boolean,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<void> {
   const suggestedParams = await algorandClient.getSuggestedParams()
@@ -385,7 +390,7 @@ export async function initStakingPoolStorage(
     .initStorage({
       args: {
         // the required MBR payment transaction
-        mbrPayment: payPoolInitStorageMbr,
+        mbrPayment: sdkTxnToAlgokit(payPoolInitStorageMbr),
       },
       extraFee: AlgoAmount.MicroAlgos(2000),
     })
@@ -455,7 +460,7 @@ export async function addStake(
   stakeAmount: bigint, // microalgos
   valueToVerify: bigint,
   rewardTokenId: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<ValidatorPoolKey> {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -493,7 +498,7 @@ export async function addStake(
       suggestedParams,
     })
 
-    simulateComposer.addTransaction(rewardTokenOptInTxn)
+    simulateComposer.addTransaction(sdkTxnToAlgokit(rewardTokenOptInTxn))
   }
 
   const simulateResults = await simulateComposer.simulate({
@@ -512,7 +517,9 @@ export async function addStake(
   )
 
   let requiredBalance =
-    (stakeTransferPayment.payment?.amount ?? 0n) + stakeTransferPayment.fee + feeAmount.microAlgos
+    (stakeTransferPayment.payment?.amount ?? 0n) +
+    (stakeTransferPayment.fee ?? 0n) +
+    feeAmount.microAlgos
 
   const composer = validatorClient
     .newGroup()
@@ -541,7 +548,7 @@ export async function addStake(
 
     requiredBalance += rewardTokenOptInTxn.fee
 
-    composer.addTransaction(rewardTokenOptInTxn)
+    composer.addTransaction(sdkTxnToAlgokit(rewardTokenOptInTxn))
   }
 
   // Check balance
@@ -717,7 +724,7 @@ export async function removeStake(
   poolAppId: bigint,
   amountToUnstake: bigint,
   rewardTokenId: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const suggestedParams = await algorandClient.getSuggestedParams()
@@ -744,7 +751,7 @@ export async function removeStake(
       suggestedParams,
     })
 
-    simulateComposer.addTransaction(rewardTokenOptInTxn)
+    simulateComposer.addTransaction(sdkTxnToAlgokit(rewardTokenOptInTxn))
   }
 
   const simulateResult = await simulateComposer.simulate({
@@ -784,7 +791,7 @@ export async function removeStake(
 
     requiredBalance += rewardTokenOptInTxn.fee
 
-    composer.addTransaction(rewardTokenOptInTxn)
+    composer.addTransaction(sdkTxnToAlgokit(rewardTokenOptInTxn))
   }
 
   // Check balance
@@ -795,7 +802,7 @@ export async function removeStake(
 
 export async function epochBalanceUpdate(
   poolAppId: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<void> {
   try {
@@ -880,7 +887,7 @@ export async function fetchPoolInfo(
 
 export async function claimTokens(
   pools: PoolInfo[],
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const [algorand, stakingFactory] = getStakingPoolFactory()
@@ -951,7 +958,7 @@ export async function fetchStakedInfoForPool(poolAppId: bigint): Promise<StakedI
 export async function changeValidatorManager(
   validatorId: number | bigint,
   manager: string,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -969,7 +976,7 @@ export async function changeValidatorSunsetInfo(
   validatorId: number | bigint,
   sunsettingOn: number,
   sunsettingTo: number,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -987,7 +994,7 @@ export async function changeValidatorNfd(
   validatorId: number | bigint,
   nfdAppId: bigint,
   nfdName: string,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -1005,7 +1012,7 @@ export async function changeValidatorNfd(
 export async function changeValidatorCommissionAddress(
   validatorId: number | bigint,
   commissionAddress: string,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -1026,7 +1033,7 @@ export async function changeValidatorRewardInfo(
   entryGatingAssets: EntryGatingAssets,
   gatingAssetMinBalance: bigint,
   rewardPerPayout: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   const validatorClient = await getValidatorClient(signer, activeAddress)
@@ -1068,7 +1075,7 @@ export async function linkPoolToNfd(
   poolAppId: bigint,
   nfdName: string,
   nfdAppId: number,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ) {
   try {
@@ -1109,8 +1116,8 @@ export async function linkPoolToNfd(
 
     await stakingPoolClient
       .newGroup()
-      .addTransaction(payBoxStorageMbrTxn)
-      .addTransaction(updateNfdAppCall)
+      .addTransaction(sdkTxnToAlgokit(payBoxStorageMbrTxn))
+      .addTransaction(sdkTxnToAlgokit(updateNfdAppCall))
       .linkToNfd({ args: { nfdAppId, nfdName }, extraFee: feeAmount })
       .send({ populateAppCallResources: true })
   } catch (error) {

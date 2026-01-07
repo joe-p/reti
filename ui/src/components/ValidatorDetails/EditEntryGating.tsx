@@ -45,6 +45,7 @@ import { getNfdAppFromViteEnvironment } from '@/utils/network/getNfdConfig'
 import { isValidName, trimExtension } from '@/utils/nfd'
 import { cn } from '@/utils/ui'
 import { entryGatingRefinement, validatorSchemas } from '@/utils/validation'
+import { Asset } from '@algorandfoundation/algokit-utils/algod-client'
 
 const nfdAppUrl = getNfdAppFromViteEnvironment()
 
@@ -55,7 +56,7 @@ interface EditEntryGatingProps {
 export function EditEntryGating({ validator }: EditEntryGatingProps) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const [isSigning, setIsSigning] = React.useState(false)
-  const [gatingAssets, setGatingAssets] = React.useState<Array<algosdk.modelsv2.Asset | null>>([])
+  const [gatingAssets, setGatingAssets] = React.useState<Array<Asset | null>>([])
   const [isFetchingGatingAssetIndex, setIsFetchingGatingAssetIndex] = React.useState<number>(-1)
 
   const {
@@ -98,9 +99,9 @@ export function EditEntryGating({ validator }: EditEntryGatingProps) {
   const defaultGatingAssetMinBalance =
     gatingAssetMinBalance > 1
       ? convertFromBaseUnits(
-          gatingAssetMinBalance,
-          validator.gatingAssets?.[0].params.decimals,
-        ).toString()
+        gatingAssetMinBalance,
+        validator.gatingAssets?.[0].params.decimals,
+      ).toString()
       : ''
 
   const defaultValues = {
@@ -109,8 +110,8 @@ export function EditEntryGating({ validator }: EditEntryGatingProps) {
     entryGatingAssets:
       entryGatingType === GatingType.AssetId
         ? entryGatingAssets
-            .filter((assetId) => assetId > 0)
-            .map((assetId) => ({ value: String(assetId) }))
+          .filter((assetId) => assetId > 0)
+          .map((assetId) => ({ value: String(assetId) }))
         : [{ value: '' }],
     entryGatingNfdCreator: nfdCreatorQuery.data?.name || '',
     entryGatingNfdParent: nfdParentQuery.data?.name || '',
@@ -151,7 +152,7 @@ export function EditEntryGating({ validator }: EditEntryGatingProps) {
     })
   }
 
-  const handleSetGatingAssetById = async (index: number, value: algosdk.modelsv2.Asset | null) => {
+  const handleSetGatingAssetById = async (index: number, value: Asset | null) => {
     setGatingAssets((prev) => {
       const newAssets = [...prev]
       newAssets[index] = value
