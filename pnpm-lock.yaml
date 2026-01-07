@@ -102,9 +102,9 @@ importers:
       '@algorandfoundation/algokit-utils':
         specifier: 10.0.0-alpha.29
         version: 10.0.0-alpha.29
-      '@algorandfoundation/xgov-clients':
-        specifier: ^3.0.1
-        version: 3.0.1(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)
+      '@algorandfoundation/xgov':
+        specifier: github:algorandfoundation/xgov-beta-ts#spike/utils_v10
+        version: https://codeload.github.com/algorandfoundation/xgov-beta-ts/tar.gz/7e8dca23813ad45e504f7be7122e95f99c1965ae(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)
       '@blockshake/defly-connect':
         specifier: 1.2.1
         version: 1.2.1(algosdk@3.4.0)
@@ -385,11 +385,12 @@ packages:
     resolution: {integrity: sha512-aQpLHfz6+f5WoTWs9U6AbFysS8dw65iCjk2jxkqE+l137i4ZQF01GC8OndTyVX97RTSwjoBay/gJ2jk1JBdyeA==}
     hasBin: true
 
-  '@algorandfoundation/xgov-clients@3.0.1':
-    resolution: {integrity: sha512-s/L40sVpzeVtZqbsqR3NY3qLchg4UCR8mqdxFfXy4sL6iAkvoibpdz2NrIBAglHLyD4m8H4JI3Hj1oHf7FySAQ==}
+  '@algorandfoundation/xgov@https://codeload.github.com/algorandfoundation/xgov-beta-ts/tar.gz/7e8dca23813ad45e504f7be7122e95f99c1965ae':
+    resolution: {tarball: https://codeload.github.com/algorandfoundation/xgov-beta-ts/tar.gz/7e8dca23813ad45e504f7be7122e95f99c1965ae}
+    version: 0.0.0
     peerDependencies:
-      '@algorandfoundation/algokit-utils': ^9.1.2
-      algosdk: ^3.4.0
+      '@algorandfoundation/algokit-utils': ^10.0.0-alpha.29
+      algosdk: ^2.9.0
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -5463,7 +5464,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@algorandfoundation/xgov-clients@3.0.1(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)':
+  '@algorandfoundation/xgov@https://codeload.github.com/algorandfoundation/xgov-beta-ts/tar.gz/7e8dca23813ad45e504f7be7122e95f99c1965ae(@algorandfoundation/algokit-utils@10.0.0-alpha.29)(algosdk@3.4.0)':
     dependencies:
       '@algorandfoundation/algokit-utils': 10.0.0-alpha.29
       algosdk: 3.4.0

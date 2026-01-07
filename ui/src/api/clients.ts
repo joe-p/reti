@@ -1,4 +1,3 @@
-import algosdk from 'algosdk'
 import { FEE_SINK } from '@/constants/accounts'
 import { StakingPoolClient, StakingPoolFactory } from '@/contracts/StakingPoolClient'
 import { ValidatorRegistryClient } from '@/contracts/ValidatorRegistryClient'
@@ -9,7 +8,8 @@ import {
 import { getAlgodConfigFromViteEnvironment } from '@/utils/network/getAlgoClientConfigs'
 import { AlgorandClient } from '@algorandfoundation/algokit-utils'
 // @ts-expect-error module resolution issue
-import { XGovRegistryClient } from '@algorandfoundation/xgov-clients/registry'
+import { XGovRegistryClient } from '@algorandfoundation/xgov/registry'
+import { TransactionSigner } from '@algorandfoundation/algokit-utils/transact'
 
 const algodConfig = getAlgodConfigFromViteEnvironment()
 
@@ -25,7 +25,7 @@ export function getStakingPoolFactory(): [AlgorandClient, StakingPoolFactory] {
 }
 
 export async function getValidatorClient(
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<ValidatorRegistryClient> {
   algorandClient.setSigner(activeAddress, signer)
@@ -46,7 +46,7 @@ export async function getSimulateValidatorClient(
 
 export async function getStakingPoolClient(
   poolAppId: bigint,
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<StakingPoolClient> {
   algorandClient.setSigner(activeAddress, signer)
@@ -67,7 +67,7 @@ export async function getSimulateStakingPoolClient(
 }
 
 export async function getXGovRegistryClient(
-  signer: algosdk.TransactionSigner,
+  signer: TransactionSigner,
   activeAddress: string,
 ): Promise<XGovRegistryClient> {
   algorandClient.setSigner(activeAddress, signer)

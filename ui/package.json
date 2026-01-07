@@ -40,7 +40,7 @@
   "dependencies": {
     "@algorandfoundation/algokit-client-generator": "7.0.0-alpha.6",
     "@algorandfoundation/algokit-utils": "10.0.0-alpha.29",
-    "@algorandfoundation/xgov-clients": "^3.0.1",
+    "@algorandfoundation/xgov": "github:algorandfoundation/xgov-beta-ts#spike/utils_v10",
     "@blockshake/defly-connect": "1.2.1",
     "@hookform/resolvers": "3.9.0",
     "@perawallet/connect": "1.4.1",
