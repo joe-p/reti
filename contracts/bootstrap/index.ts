@@ -1,7 +1,6 @@
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
-import { Account, secretKeyToMnemonic } from 'algosdk'
+import { Addressable, AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { secretKeyToMnemonic } from 'algosdk'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { getTestAccount } from '@algorandfoundation/algokit-utils/testing'
 import * as fs from 'fs'
 import yargs from 'yargs'
 import prompts from 'prompts'
@@ -9,6 +8,34 @@ import { AlgoClientConfig } from '@algorandfoundation/algokit-utils/types/networ
 import { ClientManager } from '@algorandfoundation/algokit-utils/types/client-manager'
 import { StakingPoolFactory } from '../contracts/clients/StakingPoolClient'
 import { ValidatorRegistryFactory } from '../contracts/clients/ValidatorRegistryClient'
+import { AddressWithSigners, generateAddressWithSigners } from '@algorandfoundation/algokit-utils/transact'
+import nacl from 'tweetnacl'
+
+// MIGRATION NOTE: utils doesn't expose SK, so we need to generate an SK ourselves.
+// Maybe we should expose SK from test functions?
+async function getTestAccount(
+    algorand: AlgorandClient,
+    amount: bigint,
+): Promise<AddressWithSigners & { sk: Uint8Array }> {
+    const keypair = nacl.sign.keyPair()
+    const rawSigner = async (bytesToSign: Uint8Array): Promise<Uint8Array> => {
+        return nacl.sign.detached(bytesToSign, keypair.secretKey)
+    }
+
+    const addrWithSigners = generateAddressWithSigners({
+        ed25519Pubkey: keypair.publicKey,
+        rawEd25519Signer: rawSigner,
+    })
+
+    algorand.account.ensureFunded(
+        addrWithSigners.addr,
+        await algorand.account.localNetDispenser(),
+        AlgoAmount.MicroAlgo(amount),
+    )
+
+    algorand.setSignerFromAccount(addrWithSigners)
+    return { ...addrWithSigners, sk: keypair.secretKey }
+}
 
 function getNetworkConfig(network: string): [AlgoClientConfig, bigint, string] {
     let nfdRegistryAppID: bigint
@@ -98,7 +125,7 @@ async function main() {
     }
     console.log(`algo config is:${JSON.stringify(algodConfig)}`)
 
-    let creatorAcct: Account
+    let creatorAcct: Addressable
 
     // Confirm the network choice by prompting the user if they want to continue if !localnet
     if (args.network !== 'localnet') {
@@ -107,7 +134,7 @@ async function main() {
             console.error('Environment variable CREATOR_MNEMONIC is not defined')
             process.exit(1)
         }
-        creatorAcct = (await algorand.account.fromEnvironment('CREATOR')).account
+        creatorAcct = await algorand.account.fromEnvironment('CREATOR')
         console.log(`using ${creatorAcct.addr} as Reti creator.  MAKE SURE THIS IS CORRECT!`)
 
         console.log(`You've specified you want to DEPLOY to ${args.network}!  This is permanent !`)
@@ -123,9 +150,11 @@ async function main() {
     } else {
         if (!process.env.CREATOR_MNEMONIC) {
             console.log('no creator account specified - using dispenser account as creator')
-            creatorAcct = (await algorand.account.dispenserFromEnvironment()).account
+            const generatedCreator = await getTestAccount(algorand, 100_000n)
+            process.env.CREATOR_MNEMONIC = secretKeyToMnemonic(generatedCreator.sk)
+            creatorAcct = generatedCreator
         } else {
-            creatorAcct = (await algorand.account.fromEnvironment('CREATOR')).account
+            creatorAcct = await algorand.account.fromEnvironment('CREATOR')
             console.log(`using ${creatorAcct.addr} as Reti creator.  MAKE SURE THIS IS CORRECT!`)
         }
 
@@ -192,21 +221,15 @@ async function main() {
 
     if (args.network === 'localnet') {
         // generate two dummy stakers - each w/ 100 million
-        const staker1 = await getTestAccount(
-            { initialFunds: AlgoAmount.Algos(100_000_000), suppressLog: true },
-            algorand,
-        )
-        const staker2 = await getTestAccount(
-            { initialFunds: AlgoAmount.Algos(100_000_000), suppressLog: true },
-            algorand,
-        )
+        const staker1 = await getTestAccount(algorand, 100_000_000n)
+        const staker2 = await getTestAccount(algorand, 100_000_000n)
         console.log(`Created test account 1: ${staker1.addr.toString()}`)
         console.log(`Created test account 2: ${staker2.addr.toString()}`)
 
         // Write the mnemonic to a .sandbox file in ../../nodemgr directory
         fs.writeFileSync(
             '../../nodemgr/.env.sandbox',
-            `ALGO_MNEMONIC_${creatorAcct.addr.toString().substring(0, 4)}=${secretKeyToMnemonic(creatorAcct.sk)}\nRETI_APPID=${validatorApp.appClient.appId}\nALGO_MNEMONIC_${staker1.addr.toString().substring(0, 4)}=${secretKeyToMnemonic(staker1.sk)}\nALGO_MNEMONIC_${staker2.addr.toString().substring(0, 4)}=${secretKeyToMnemonic(staker2.sk)}\n`,
+            `ALGO_MNEMONIC_${creatorAcct.addr.toString().substring(0, 4)}=${process.env.CREATOR_MNEMONIC}\nRETI_APPID=${validatorApp.appClient.appId}\nALGO_MNEMONIC_${staker1.addr.toString().substring(0, 4)}=${secretKeyToMnemonic(staker1.sk)}\nALGO_MNEMONIC_${staker2.addr.toString().substring(0, 4)}=${secretKeyToMnemonic(staker2.sk)}\n`,
         )
         console.log('Modified .env.sandbox in nodemgr directory with these values for testing')
 
