@@ -42,7 +42,7 @@ export function algokitSignerToSdk(algokitSigner: TransactionSigner): algosdk.Tr
 
 export function algokitAlgodToSdk(algokitAlgod: AlgodClient): algosdk.Algodv2 {
   return new algosdk.Algodv2(
-    algokitAlgod.httpRequest.config.headers?.['X-Algo-API-Token'] ?? '',
+    algokitAlgod.httpRequest.config.headers ?? '',
     algokitAlgod.httpRequest.config.baseUrl,
     algokitAlgod.httpRequest.config.port,
   )
