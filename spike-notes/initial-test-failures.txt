@@ -1,0 +1,31 @@
+ FAIL  __test__/contracts.test.ts > reti > SaturatedValidator > testPenalties
+AssertionError: expected 70000190000000n to deeply equal 70000200000000n
+
+- Expected
++ Received
+
+- 70000200000000n
++ 70000190000000n
+
+ ❯ __test__/contracts.test.ts:3695:42
+    3693|             }
+    3694|
+    3695|             expect(postSaturatedPoolBal).toEqual(poolInfo.totalAlgoStaked + diminishedRewards)
+       |                                          ^
+    3696|             // reward should've been reduced with rest going to fee sink
+    3697|             const newFeeSinkBal = await fixture.context.algorand.account.getInformation(FEE_SINK_ADDR)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  __test__/contracts.test.ts > reti > CoinFabrik Audit suggested extra tests > ME-03 Incentivizing Pool Saturation for Staker Gain > Saturation should not benefit stakers
+Error: Transaction failed at transaction(s) 1 in the group. transaction XK7WZB664GIWK3PH5YZXWIY5XE2ID334OLNL24U4WA2SGEPDACBA: overspend (account L56GBHBGS6RGFWVVZY2JVGFM4XWZS2BB347ZVOYSMNZ5C44IPIIIUG2OLI, data {AccountBaseData:{Status:Offline MicroAlgos:{Raw:69999999897900} RewardsBase:0 RewardedMicroAlgos:{Raw:0} AuthAddr:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ IncentiveEligible:false TotalAppSchema:{_struct:{} NumUint:0 NumByteSlice:0} TotalExtraAppPages:0 TotalAppParams:0 TotalAppLocalStates:0 TotalAssetParams:0 TotalAssets:0 TotalBoxes:0 TotalBoxBytes:0 LastProposed:0 LastHeartbeat:0} VotingData:{VoteID:[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] SelectionID:[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] StateProofID:[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] VoteFirstValid:0 VoteLastValid:0 VoteKeyDilution:0}}, tried to spend {808740849380201})
+ ❯ TransactionComposer.simulate ../node_modules/.pnpm/@algorandfoundation+algokit-utils@10.0.0-alpha.29/node_modules/@algorandfoundation/src/types/composer.ts:2062:21
+ ❯ Object.simulate contracts/clients/ValidatorRegistryClient.ts:3753:24
+    3751|       async simulate(options?: SimulateOptions) {
+    3752|         await promiseChain
+    3753|         const result = await (!options ? composer.simulate() : composer.simulate(options))
+       |                        ^
+    3754|         return {
+    3755|           ...result,
+ ❯ Module.addStake helpers/helpers.ts:248:33
+ ❯ __test__/contracts.test.ts:4559:36

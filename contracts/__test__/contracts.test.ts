@@ -1,9 +1,8 @@
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
+import { Addressable, AlgorandClient, getApplicationAddress } from '@algorandfoundation/algokit-utils'
 import { algoKitLogCaptureFixture, algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { consoleLogger } from '@algorandfoundation/algokit-utils/types/logging'
 import { AlgorandTestAutomationContext } from '@algorandfoundation/algokit-utils/types/testing'
-import { Account, getApplicationAddress } from 'algosdk'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import {
     StakedInfo,
@@ -66,7 +65,7 @@ describe('reti', () => {
     // First construct the 'template' pool and then the master validator contract that everything will use
     beforeAll(async () => {
         await fixture.beforeEach()
-        await fixture.context.algod.setBlockOffsetTimestamp(0).do()
+        await fixture.context.algod.setBlockTimeStampOffset(0)
 
         // testAccount here is the account that creates the Validator master contracts themselves - but basically one-time thing to be ignored
         const { algorand, testAccount } = fixture.context
@@ -192,7 +191,7 @@ describe('reti', () => {
 
     describe('StakeAdds', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
 
@@ -471,7 +470,7 @@ describe('reti', () => {
 
         test('addMaxPoolsAndFill', async () => {
             const pools: ValidatorPoolKey[] = []
-            const stakers: Account[] = []
+            const stakers: Addressable[] = []
             const poolsToCreate = MaxPoolsPerNode
 
             // capture current 'total' state for all pools
@@ -746,7 +745,7 @@ describe('reti', () => {
 
     describe('StakeAddWMixedRemove', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let firstPoolKey: ValidatorPoolKey
 
         beforeAll(async () => {
@@ -905,7 +904,7 @@ describe('reti', () => {
 
         // Figure out the timestamp of prior block and use that as the 'current time' for purposes
         // of matching the epoch payout calculations in the contract
-        const curStatus = await context.algod.status().do()
+        const curStatus = await context.algod.status()
         const lastBlock = curStatus.lastRound
         const thisEpochBegin = lastBlock - (lastBlock % BigInt(epochRoundLength))
         let numStakers = 0
@@ -1019,8 +1018,8 @@ describe('reti', () => {
 
     describe('StakeWRewards', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
-        const stakerAccounts: Account[] = []
+        let validatorOwnerAccount: Addressable
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -1232,7 +1231,7 @@ describe('reti', () => {
                 receiver: getApplicationAddress(firstPoolKey.poolAppId),
                 amount: AlgoAmount.Algos(100),
             })
-            const params = await fixture.context.algod.getTransactionParams().do()
+            const params = await fixture.context.algod.transactionParams()
             // add blocks to get to exact start of new epoch
             if (params.firstValid % BigInt(epochRoundLength) !== 0n) {
                 await incrementRoundNumberBy(
@@ -1283,7 +1282,7 @@ describe('reti', () => {
             stakerAccounts.push(partialEpochStaker1)
             stakerAccounts.push(partialEpochStaker2)
 
-            const params = await fixture.context.algod.getTransactionParams().do()
+            const params = await fixture.context.algod.transactionParams()
             // add blocks to get to block prior to start of new epoch
             await incrementRoundNumberBy(
                 fixture.context,
@@ -1383,8 +1382,8 @@ describe('reti', () => {
 
     describe('StakeW0Commission', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
-        const stakerAccounts: Account[] = []
+        let validatorOwnerAccount: Addressable
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -1558,8 +1557,8 @@ describe('reti', () => {
 
     describe('StakeW100Commission', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
-        const stakerAccounts: Account[] = []
+        let validatorOwnerAccount: Addressable
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -1731,10 +1730,10 @@ describe('reti', () => {
 
     describe('StakeWTokenWRewards', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
-        let tokenCreatorAccount: Account
+        let validatorOwnerAccount: Addressable
+        let tokenCreatorAccount: Addressable
         let validatorConfig: ValidatorConfig
-        const stakerAccounts: Account[] = []
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -1971,7 +1970,7 @@ describe('reti', () => {
             // opt-in to reward token
             await fixture.algorand.send.assetOptIn({ sender: partialEpochStaker.addr, assetId: rewardTokenId })
 
-            const params = await fixture.context.algod.getTransactionParams().do()
+            const params = await fixture.context.algod.transactionParams()
             // add blocks to get to block prior to start of new epoch
             await incrementRoundNumberBy(
                 fixture.context,
@@ -2111,8 +2110,8 @@ describe('reti', () => {
 
     describe('StakeUnstakeAccumTests', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
-        const stakerAccounts: Account[] = []
+        let validatorOwnerAccount: Addressable
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -2204,7 +2203,7 @@ describe('reti', () => {
                 stakeAmount1,
                 0n,
             )
-            const params = await fixture.context.algod.status().do()
+            const params = await fixture.context.algod.status()
             let lastBlock = params.lastRound
 
             // should match info from first staking pool
@@ -2234,7 +2233,7 @@ describe('reti', () => {
             const stakeAmount2 = AlgoAmount.Algos(1000)
             await addStake(fixture.context, validatorMasterClient, validatorId, stakerAccount, stakeAmount2, 0n)
             roundsPerDay = (await firstPoolClient.state.global.roundsPerDay())!
-            lastBlock = (await fixture.context.algod.status().do()).lastRound
+            lastBlock = (await fixture.context.algod.status()).lastRound
             roundsRemaining = binRoundStart + roundsPerDay - lastBlock
             poolGS = await firstPoolClient.state.global.getAll()
             const secondStakeAccum = poolGS.stakeAccumulator!
@@ -2243,7 +2242,7 @@ describe('reti', () => {
             // remove bits of stake
             await removeStake(firstPoolClient, stakerAccounts[0], AlgoAmount.Algos(50))
             roundsPerDay = (await firstPoolClient.state.global.roundsPerDay())!
-            lastBlock = (await fixture.context.algod.status().do()).lastRound
+            lastBlock = (await fixture.context.algod.status()).lastRound
             roundsRemaining = binRoundStart + roundsPerDay - lastBlock
             poolGS = await firstPoolClient.state.global.getAll()
             const newStakeAccum = poolGS.stakeAccumulator!
@@ -2252,7 +2251,7 @@ describe('reti', () => {
             // remove bits of stake
             await removeStake(firstPoolClient, stakerAccounts[0], AlgoAmount.Algos(60))
             roundsPerDay = (await firstPoolClient.state.global.roundsPerDay())!
-            lastBlock = (await fixture.context.algod.status().do()).lastRound
+            lastBlock = (await fixture.context.algod.status()).lastRound
             roundsRemaining = binRoundStart + roundsPerDay - lastBlock
             poolGS = await firstPoolClient.state.global.getAll()
             const thirdStakeAccum = poolGS.stakeAccumulator!
@@ -2262,11 +2261,11 @@ describe('reti', () => {
 
     describe('TokenRewardOnlyTokens', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let validatorConfig: ValidatorConfig
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
-        let stakerAccount: Account
+        let stakerAccount: Addressable
 
         let rewardTokenId: bigint
         const tokenRewardPerPayout = 1000n
@@ -2428,9 +2427,9 @@ describe('reti', () => {
 
     describe('DoublePoolWTokens', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let validatorConfig: ValidatorConfig
-        const stakerAccounts: Account[] = []
+        const stakerAccounts: Addressable[] = []
         let poolAppId: bigint
         const poolKeys: ValidatorPoolKey[] = []
         const poolClients: StakingPoolClient[] = []
@@ -2695,8 +2694,8 @@ describe('reti', () => {
     describe('TokenGatingByCreator', () => {
         let validatorId: number
 
-        let tokenCreatorAccount: Account
-        let validatorOwnerAccount: Account
+        let tokenCreatorAccount: Addressable
+        let validatorOwnerAccount: Addressable
         let validatorConfig: ValidatorConfig
         let firstPoolKey: ValidatorPoolKey
 
@@ -2752,7 +2751,7 @@ describe('reti', () => {
         })
 
         describe('stakeTest', () => {
-            let stakerAccount: Account
+            let stakerAccount: Addressable
             let stakerCreatedTokenId: bigint
             beforeAll(async () => {
                 // Fund a 'staker account' that will be the new 'staker'
@@ -2877,8 +2876,8 @@ describe('reti', () => {
     describe('TokenGatingByAsset', () => {
         let validatorId: number
 
-        let tokenCreatorAccount: Account
-        let validatorOwnerAccount: Account
+        let tokenCreatorAccount: Addressable
+        let validatorOwnerAccount: Addressable
         let validatorConfig: ValidatorConfig
         let firstPoolKey: ValidatorPoolKey
 
@@ -2948,7 +2947,7 @@ describe('reti', () => {
         })
 
         describe('stakeTest', () => {
-            let stakerAccount: Account
+            let stakerAccount: Addressable
             let stakerCreatedTokenId: bigint
             beforeAll(async () => {
                 // Fund a 'staker account' that will be the new 'staker'
@@ -3067,8 +3066,8 @@ describe('reti', () => {
     describe('TokenGatingMultAssets', () => {
         let validatorId: number
 
-        let tokenCreatorAccount: Account
-        let validatorOwnerAccount: Account
+        let tokenCreatorAccount: Addressable
+        let validatorOwnerAccount: Addressable
         let validatorConfig: ValidatorConfig
         let firstPoolKey: ValidatorPoolKey
 
@@ -3126,7 +3125,7 @@ describe('reti', () => {
         })
 
         describe('stakeTest', () => {
-            let stakerAccount: Account
+            let stakerAccount: Addressable
             let stakerCreatedTokenId: bigint
             beforeAll(async () => {
                 // Fund a 'staker account' that will be the new 'staker'
@@ -3256,7 +3255,7 @@ describe('reti', () => {
 
     describe('APRTest', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let ourPoolClient: StakingPoolClient
@@ -3273,7 +3272,7 @@ describe('reti', () => {
         // add validator and 1 pool for subsequent stake tests
         beforeAll(async () => {
             // let's make sure 'rounds per day' is always a small number by having a LOT of time between blocks
-            await fixture.context.algod.setBlockOffsetTimestamp((60 * 60 * 24) / 10).do()
+            await fixture.context.algod.setBlockTimeStampOffset((60 * 60 * 24) / 10)
             // have at least 12 dummy transactions so contract will set roundsPerDay from chain
             await incrementRoundNumberBy(fixture.context, 12)
             // wait 3 seconds to break param cache (disabling seems to break other things)
@@ -3335,14 +3334,14 @@ describe('reti', () => {
         })
         afterAll(async () => {
             // reset block offset back to working like normal
-            await fixture.context.algod.setBlockOffsetTimestamp(0).do()
+            await fixture.context.algod.setBlockTimeStampOffset(0)
         })
 
         test('firstStaker', async () => {
             const gs = await ourPoolClient.state.global.getAll()
             const roundsPerDay = gs.roundsPerDay!
             const binRoundStart = gs.binRoundStart!
-            const lastBlock = (await fixture.context.algod.status().do()).lastRound
+            const lastBlock = (await fixture.context.algod.status()).lastRound
             const roundsRemaining = binRoundStart + roundsPerDay - lastBlock
 
             consoleLogger.info(`roundsPerDay:${roundsPerDay} roundsRemaining:${roundsRemaining}`)
@@ -3389,7 +3388,7 @@ describe('reti', () => {
             // so it's right at beginning of day not towards end
             let gs = await ourPoolClient.state.global.getAll()
             let roundsRemaining =
-                gs.binRoundStart! + gs.roundsPerDay! - (await fixture.context.algod.status().do()).lastRound
+                gs.binRoundStart! + gs.roundsPerDay! - (await fixture.context.algod.status()).lastRound
             await incrementRoundNumberBy(fixture.context, Number(roundsRemaining) - 1)
             // ====
 
@@ -3440,7 +3439,7 @@ describe('reti', () => {
             const ewmaAfter = gs.weightedMovingAverage!
             const roundsPerDay = gs.roundsPerDay!
             const binRoundStart = gs.binRoundStart!
-            roundsRemaining = binRoundStart + roundsPerDay - (await fixture.context.algod.status().do()).lastRound
+            roundsRemaining = binRoundStart + roundsPerDay - (await fixture.context.algod.status()).lastRound
 
             consoleLogger.info(`binRoundStart:Before:${roundStartBefore} binRoundStart:After:${binRoundStart}`)
             consoleLogger.info(`stakeAccum before:${stakeAccumBefore} stakeAccum after:${stakeAccumAfter}`)
@@ -3467,9 +3466,9 @@ describe('reti', () => {
         test('1. next day, reward, check apr', async () => {
             let gs = await ourPoolClient.state.global.getAll()
             const ewmaBefore = gs.weightedMovingAverage
-            const { lastRound } = await fixture.context.algod.status().do()
+            const { lastRound } = await fixture.context.algod.status()
             const roundsRemaining = gs.binRoundStart! + gs.roundsPerDay! - lastRound
-            const blockData = await fixture.context.algod.block(lastRound).do()
+            const blockData = await fixture.context.algod.block(lastRound)
             const ts = new Date(Number(blockData.block.header.timestamp) * 1000)
             await incrementRoundNumberBy(fixture.context, Number(roundsRemaining))
             // so lets try, payment, epochupdate, 8 blocks
@@ -3492,9 +3491,9 @@ describe('reti', () => {
         test('2. next day, reward, check apr', async () => {
             let gs = await ourPoolClient.state.global.getAll()
             const ewmaBefore = gs.weightedMovingAverage
-            const { lastRound } = await fixture.context.algod.status().do()
+            const { lastRound } = await fixture.context.algod.status()
             const roundsRemaining = gs.binRoundStart! + gs.roundsPerDay! - lastRound
-            const blockData = await fixture.context.algod.block(lastRound).do()
+            const blockData = await fixture.context.algod.block(lastRound)
             const ts = new Date(Number(blockData.block.header.timestamp) * 1000)
             await incrementRoundNumberBy(fixture.context, Number(roundsRemaining))
             // so lets try, payment, epochupdate, 8 blocks
@@ -3519,8 +3518,8 @@ describe('reti', () => {
     describe('SaturatedValidator', () => {
         let validatorId: number
 
-        let validatorOwnerAccount: Account
-        let stakerAccount: Account
+        let validatorOwnerAccount: Addressable
+        let stakerAccount: Addressable
         let validatorConfig: ValidatorConfig
         const pools: ValidatorPoolKey[] = []
 
@@ -3711,7 +3710,7 @@ describe('reti', () => {
 
     describe('StakeAddRemoveBugVerify', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
 
@@ -3752,7 +3751,7 @@ describe('reti', () => {
         })
 
         test('addRemoveStakers', async () => {
-            const stakers: Account[] = []
+            const stakers: Addressable[] = []
             for (let i = 0; i < 3; i += 1) {
                 const stakerAccount = await fixture.context.generateAccount({
                     initialFunds: AlgoAmount.MicroAlgos(MaxAlgoPerPool + AlgoAmount.Algos(4000).microAlgos),
@@ -3829,7 +3828,7 @@ describe('reti', () => {
     describe('StakerMultiPoolAddRemoveBugVerify', () => {
         const validatorIds: number[] = []
         const poolKeys: ValidatorPoolKey[] = []
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
 
         beforeAll(async () => {
             validatorOwnerAccount = await fixture.context.generateAccount({
@@ -3956,7 +3955,7 @@ describe('reti', () => {
     // Remove skip when want to do full pool (200 stakers) testing
     describe.skip('ValidatorWFullPoolWRewards', () => {
         let validatorId: number
-        let validatorOwnerAccount: Account
+        let validatorOwnerAccount: Addressable
         let poolAppId: bigint
         let firstPoolKey: ValidatorPoolKey
         let firstPoolClient: StakingPoolClient
@@ -4144,10 +4143,10 @@ describe('reti', () => {
     describe('CoinFabrik Audit suggested extra tests', () => {
         describe('HI-01 Token Reward Calculation Inconsistent for Partial Stakers', () => {
             let validatorId: number
-            let validatorOwnerAccount: Account
-            let tokenCreatorAccount: Account
-            let partialEpochStaker: Account
-            let partialEpochStaker2: Account
+            let validatorOwnerAccount: Addressable
+            let tokenCreatorAccount: Addressable
+            let partialEpochStaker: Addressable
+            let partialEpochStaker2: Addressable
             let validatorConfig: ValidatorConfig
             let poolAppId: bigint
             let firstPoolKey: ValidatorPoolKey
@@ -4252,7 +4251,7 @@ describe('reti', () => {
 
             // FAILS - Reflects ISSUE H1-01
             test('Token partial epoch rewards distributed should not affect subsequent distributions during the same epoch update', async () => {
-                const params = await fixture.context.algod.getTransactionParams().do()
+                const params = await fixture.context.algod.transactionParams()
 
                 // increment rounds to get to the start of new epoch. This means that staking will occur 1 round after.
                 await incrementRoundNumberBy(
@@ -4314,8 +4313,8 @@ describe('reti', () => {
 
         describe('ME-02 Incorrect Validator SunsettingOn Verification', () => {
             let validatorId: number
-            let validatorOwnerAccount: Account
-            let stakerAccount: Account
+            let validatorOwnerAccount: Addressable
+            let stakerAccount: Addressable
             let newSunset: bigint
 
             beforeAll(async () => {
@@ -4352,7 +4351,7 @@ describe('reti', () => {
                 )
 
                 // set sunset 1 round after now
-                newSunset = (await fixture.context.algod.getTransactionParams().do()).firstValid + 1n
+                newSunset = (await fixture.context.algod.transactionParams()).firstValid + 1n
 
                 await validatorMasterClient
                     .newGroup()
@@ -4383,7 +4382,7 @@ describe('reti', () => {
                 await incrementRoundNumberBy(fixture.context, 3)
 
                 // Let's check that we are past the new sunset value
-                expect(newSunset).toBeLessThan((await fixture.context.algod.getTransactionParams().do()).firstValid)
+                expect(newSunset).toBeLessThan((await fixture.context.algod.transactionParams()).firstValid)
 
                 const stakeAmount = AlgoAmount.MicroAlgos(
                     AlgoAmount.Algos(1000).microAlgos + AlgoAmount.MicroAlgos(mbrs.addStakerMbr).microAlgos,
@@ -4399,8 +4398,8 @@ describe('reti', () => {
         describe('ME-03 Incentivizing Pool Saturation for Staker Gain', () => {
             let validatorId: number
 
-            let validatorOwnerAccount: Account
-            let stakerAccount: Account
+            let validatorOwnerAccount: Addressable
+            let stakerAccount: Addressable
             let validatorConfig: ValidatorConfig
             const pools: ValidatorPoolKey[] = []
 
@@ -4590,7 +4589,7 @@ describe('reti', () => {
 
         describe('MI-05 Inconsistent Configuration Validation', () => {
             let validatorId: number
-            let validatorOwnerAccount: Account
+            let validatorOwnerAccount: Addressable
 
             beforeAll(async () => {
                 // Fund a 'validator account' that will be the validator owner.

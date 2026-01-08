@@ -3,7 +3,6 @@ import { PaymentParams } from '@algorandfoundation/algokit-utils/types/composer'
 import { consoleLogger } from '@algorandfoundation/algokit-utils/types/logging'
 import { LogicError } from '@algorandfoundation/algokit-utils/types/logic-error'
 import { AlgorandTestAutomationContext } from '@algorandfoundation/algokit-utils/types/testing'
-import { Account, getApplicationAddress } from 'algosdk'
 import { randomUUID } from 'crypto'
 import { StakedInfoFromTuple, StakingPoolClient, ValidatorPoolKey } from '../contracts/clients/StakingPoolClient'
 import {
@@ -12,6 +11,7 @@ import {
     ValidatorConfig,
     ValidatorRegistryClient,
 } from '../contracts/clients/ValidatorRegistryClient'
+import { Addressable, getApplicationAddress } from '@algorandfoundation/algokit-utils'
 
 export const ALGORAND_ZERO_ADDRESS_STRING = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ'
 
@@ -61,7 +61,7 @@ export async function getProtocolConstraints(validatorClient: ValidatorRegistryC
 export async function addValidator(
     context: AlgorandTestAutomationContext,
     validatorClient: ValidatorRegistryClient,
-    owner: Account,
+    owner: Addressable,
     config: ValidatorConfig,
     validatorMbr: bigint,
 ) {
@@ -101,7 +101,7 @@ export async function addStakingPool(
     validatorClient: ValidatorRegistryClient,
     validatorId: number,
     nodeNum: number,
-    vldtrAcct: Account,
+    vldtrAcct: Addressable,
     poolMbr: bigint,
     poolInitMbr: bigint,
 ) {
@@ -176,7 +176,7 @@ export async function getCurMaxStakePerPool(validatorClient: ValidatorRegistryCl
 
 export async function getStakedPoolsForAccount(
     validatorClient: ValidatorRegistryClient,
-    stakerAccount: Account,
+    stakerAccount: Addressable,
 ): Promise<ValidatorPoolKey[]> {
     const results = await validatorClient.send.getStakedPoolsForAccount({
         args: { staker: stakerAccount.addr.toString() },
@@ -189,7 +189,7 @@ export async function getStakedPoolsForAccount(
     return retPoolKeys
 }
 
-export async function getStakerInfo(stakeClient: StakingPoolClient, staker: Account) {
+export async function getStakerInfo(stakeClient: StakingPoolClient, staker: Addressable) {
     return (await stakeClient.send.getStakerInfo({ args: { staker: staker.addr.toString() } })).return!
 }
 
@@ -201,7 +201,7 @@ export async function addStake(
     context: AlgorandTestAutomationContext,
     validatorClient: ValidatorRegistryClient,
     vldtrId: number,
-    staker: Account,
+    staker: Addressable,
     algoAmount: AlgoAmount,
     valueToVerify: bigint, // depends on gating but could be nfd id, or asset id
 ): Promise<[ValidatorPoolKey, AlgoAmount]> {
@@ -298,9 +298,9 @@ export async function addStake(
 
 export async function removeStake(
     stakeClient: StakingPoolClient,
-    staker: Account,
+    staker: Addressable,
     unstakeAmount: AlgoAmount,
-    altSender?: Account,
+    altSender?: Addressable,
 ) {
     const simulateResults = await stakeClient
         .newGroup()
@@ -337,7 +337,7 @@ export async function removeStake(
     return itxnfees.microAlgos
 }
 
-export async function claimTokens(stakeClient: StakingPoolClient, staker: Account) {
+export async function claimTokens(stakeClient: StakingPoolClient, staker: Addressable) {
     const simulateResults = await stakeClient
         .newGroup()
         .gas({ args: [], note: '1', staticFee: AlgoAmount.MicroAlgos(0) })
@@ -435,7 +435,7 @@ export async function getPoolAvailBalance(context: AlgorandTestAutomationContext
 
 export async function createAsset(
     context: AlgorandTestAutomationContext,
-    sender: Account,
+    sender: Addressable,
     assetName: string,
     unitName: string,
     total?: number,
@@ -466,7 +466,7 @@ export async function incrementRoundNumberBy(context: AlgorandTestAutomationCont
         return
     }
     // Send `rounds` number of 'dummy' pay self 0 transactions
-    let params = await context.algod.getTransactionParams().do()
+    let params = await context.algod.transactionParams()
     console.log('block before incrementRoundNumberBy:', params.firstValid)
     for (let i = 0; i < rounds; i += 1) {
         await context.algorand.send.payment({
@@ -478,6 +478,6 @@ export async function incrementRoundNumberBy(context: AlgorandTestAutomationCont
         })
     }
 
-    params = await context.algod.getTransactionParams().do()
+    params = await context.algod.transactionParams()
     console.log('block AFTER incrementRoundNumberBy:', params.firstValid)
 }
